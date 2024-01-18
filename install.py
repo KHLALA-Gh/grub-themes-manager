@@ -14,6 +14,7 @@ tprint("Install")
 print("\n\n\n")
 print("install script will install the necessary packages and create an alias to use Grub Theme Manager")
 
+dirname = os.path.dirname(os.path.realpath(__file__))
 
 ask=input("start installation (Y/n): ")
 if ask.upper() != "Y" :
@@ -23,7 +24,7 @@ if ask.upper() != "Y" :
 iprint("Starting the installation",bcolors.OKGREEN,"INFO")
 alias_name = '"grub-tm"'
 
-start_command = f"source {os.path.join(os.getcwd(),'.env/bin/activate')} && sudo python3 {os.path.join(os.getcwd(),'main.py')}"
+start_command = f"source {os.path.join(dirname,'.env/bin/activate')} && sudo python3 {os.path.join(dirname,'main.py')}"
 alias_syntax = f"alias {alias_name}='{start_command}'"
 
 init_file = ""

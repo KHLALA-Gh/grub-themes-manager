@@ -1,18 +1,18 @@
 
 
 #!/bin/bash
-
-ENVDIR=".env"
-
+SCRIPTPATH="$(readlink -f "$0")"
+DIRNAME="$(dirname "$SCRIPTPATH")"
+ENVDIR="$DIRNAME/.env"
 if  [ ! -d "$ENVDIR" ]; then
   echo "# creating virtual environment..."
-  python -m venv .env
+  python -m venv $ENVDIR
 fi
 
 
 echo "# activating virtual environment..."
-source .env/bin/activate
+source $ENVDIR/bin/activate
 echo "installing pip packages"
-pip install -r requirements.txt
+pip install -r $DIRNAME/requirements.txt
 clear
-python3 install.py
+python3 $DIRNAME/install.py
