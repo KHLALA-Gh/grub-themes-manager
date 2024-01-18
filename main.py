@@ -28,9 +28,11 @@ for i in range (len(dirs)) :
 print(res)
 test = False
 while test == False :
-    inp=input(f"write theme number [1-{len(dirs)}] : ")
+    inp=input(f"write theme number [1-{len(dirs)}]('c' to quit) : ")
     if inp.isdigit() and 0 < int(inp) < len(dirs)+ 1: 
        test = True 
+    elif inp.lower()=="c" :
+        quit(0)
     else :
         print(f"please type a number between 1 and {len(dirs)}")
 theme_index = int(inp) - 1
