@@ -7,6 +7,15 @@ The program reads the themes stored in `/boot/grub/theme`, then waits for user i
 <img src="./imgs/gtm.png" />
 </center>
 
+## required packages
+
+python : https://www.python.org/ <br>
+python-pip : https://pypi.org/project/pip/ <br>
+grub : use your package manager to install GRUB. <br>
+
+> **Note**: Before you start downloading the project, you need to make sure that you have the required packages installed in your system.
+
+
 ## Setup
 ### Download the project
 ```
