@@ -12,13 +12,8 @@ from lib.search_alias import check_alias_existence
 tprint("Install")
 
 print("\n\n\n")
-print("install script will install necessary packages and create an alias to use Grub Theme Manager")
+print("install script will install the necessary packages and create an alias to use Grub Theme Manager")
 
-required_packages = [
-    "python-pip",
-    "python3",
-    "grub",
-]
 
 ask=input("start installation (Y/n): ")
 if ask.upper() != "Y" :
@@ -26,18 +21,10 @@ if ask.upper() != "Y" :
     quit()
 
 iprint("Starting the installation",bcolors.OKGREEN,"INFO")
-iprint("checking necessary packages...",bcolors.OKGREEN,"INFO")
-for i in range (len(required_packages)) :
-    if not is_package_installed(required_packages[i]) :
-        iprint(f"{required_packages[i]} package is not installed,{required_packages[i]} is required.",bcolors.FAIL,"ERROR")
-        cont = input("continue anyway (y/N) : ")
-        if cont.lower() != "y" :
-            iprint("Installation canceled",bcolors.WARNING,"ABORTED")
-            quit() 
 alias_name = '"grub-tm"'
 
-
-alias_syntax = f"alias {alias_name}='source {os.path.join(os.getcwd(),'.env/bin/activate')} && sudo python3 {os.path.join(os.getcwd(),'main.py')}'"
+start_command = f"source {os.path.join(os.getcwd(),'.env/bin/activate')} && sudo python3 {os.path.join(os.getcwd(),'main.py')}"
+alias_syntax = f"alias {alias_name}='{start_command}'"
 
 init_file = ""
 
@@ -62,3 +49,8 @@ iprint("refreshing the shell",bcolors.OKGREEN,"INFO")
 subprocess.run(["source",init_file],shell=True)
 
 iprint("The installation is successfully completed !",bcolors.OKCYAN,"COMPLETED")
+op=input("\n do you like to open grub theme manager ? (y/n) : ")
+if op.upper() != "Y" :
+    quit(0)
+print(f"> {alias_name}")
+subprocess.run(start_command,shell=True)
