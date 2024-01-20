@@ -1,5 +1,3 @@
-
-
 #!/bin/bash
 SCRIPTPATH="$(readlink -f "$0")"
 DIRNAME="$(dirname "$SCRIPTPATH")"
