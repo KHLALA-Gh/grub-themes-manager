@@ -3,7 +3,6 @@
 # dont run this file. use install.sh !
 
 from art import tprint
-from lib.check_packages import is_package_installed
 from lib.colors import bcolors
 from lib.print import iprint
 import os
