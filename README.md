@@ -36,6 +36,11 @@ run Grub Themes Manager :
 $ grub-tm
 ```
 
+## Update 
+To update the package just pull the changes from the repo :
+```
+$ git pull
+```
 ## Issues
 
 ### The program doesn't detect all my themes.
