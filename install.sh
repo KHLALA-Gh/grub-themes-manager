@@ -4,7 +4,7 @@ DIRNAME="$(dirname "$SCRIPTPATH")"
 ENVDIR="$DIRNAME/.env"
 if  [ ! -d "$ENVDIR" ]; then
   echo "# creating virtual environment..."
-  python -m venv $ENVDIR
+  python3 -m venv $ENVDIR
 fi
 
 
