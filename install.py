@@ -23,7 +23,7 @@ if ask.upper() != "Y" :
 iprint("Starting the installation",bcolors.OKGREEN,"INFO")
 alias_name = '"grub-tm"'
 
-start_command = f"source {os.path.join(dirname,'.env/bin/activate')} && sudo python3 {os.path.join(dirname,'main.py')}"
+start_command = f"sudo {os.path.join(dirname,'.env/bin/python3')} {os.path.join(dirname,'main.py')}"
 alias_syntax = f"alias {alias_name}='{start_command}'"
 
 init_file = ""
