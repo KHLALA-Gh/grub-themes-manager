@@ -2,10 +2,12 @@
 SCRIPTPATH="$(readlink -f "$0")"
 DIRNAME="$(dirname "$SCRIPTPATH")"
 ENVDIR="$DIRNAME/.env"
-if  [ ! -d "$ENVDIR" ]; then
-  echo "# creating virtual environment..."
-  python3 -m venv $ENVDIR
+if  [  -d "$ENVDIR" ]; then
+  rm -rf $ENVDIR
 fi
+
+echo "# creating virtual environment..."
+python3 -m venv $ENVDIR
 
 
 echo "# activating virtual environment..."
