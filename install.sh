@@ -14,5 +14,5 @@ echo "# activating virtual environment..."
 source $ENVDIR/bin/activate
 echo "installing pip packages"
 pip install -r $DIRNAME/requirements.txt
-clear
+
 python3 $DIRNAME/install.py
