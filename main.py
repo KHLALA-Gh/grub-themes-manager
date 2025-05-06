@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from art import tprint
 import os
 import subprocess
@@ -7,6 +6,7 @@ from configparser import ConfigParser
 from lib.colors import bcolors
 from lib.print import iprint
 import json
+from distro import id
 title=tprint("Grub Themes",font="small")
 
 # Read and set config from config.ini file 
@@ -14,6 +14,7 @@ config_file_name = "./config.ini"
 config_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),config_file_name)
 if not os.path.isfile(config_file_path) :
     iprint(f"config file does not exist '{config_file_name}'.",bcolors.FAIL,"ERROR")
+    iprint(f"you can run {os.path.join(os.path.dirname(os.path.realpath(__file__)),"install.sh")} to generate default configs",bcolors.WARNING,"HINT")
     quit(1)
 try :
     config = ConfigParser()
@@ -28,6 +29,7 @@ try :
 except Exception as e :
     iprint(f"An error occurred when parsing the config file :",bcolors.FAIL,"ERROR")
     print (type(e).__name__,e)
+    iprint(f"you can run {os.path.join(os.path.dirname(os.path.realpath(__file__)),"install.sh")} to generate default configs",bcolors.WARNING,"HINT")
     quit()
 
 # Read themes from themes directories
@@ -87,9 +89,12 @@ def change_theme(file_path,theme_path):
 
 
 change_theme(grub_cfg_file_path,theme_path)
+grubConfigCmd = "grub-mkconfig"
 
+if id() == "fedora" :
+    grubConfigCmd = "grub2-mkconfig"
 # generate the grub config file
-result = subprocess.run(f"sudo grub-mkconfig -o {grub_cfg}",shell=True, check=True, stdout=subprocess.PIPE, text=True)
+result = subprocess.run(f"sudo {grubConfigCmd} -o {grub_cfg}",shell=True, check=True, stdout=subprocess.PIPE, text=True)
 print(nl*3)
 # finish 
 print(theme_name,"is installed. Reboot to test the theme.")

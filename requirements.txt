@@ -1,6 +1,7 @@
 art==6.1
 certifi==2023.11.17
 charset-normalizer==3.3.2
+distro==1.9.0
 docopt==0.6.2
 idna==3.7
 pipreqs==0.4.13
