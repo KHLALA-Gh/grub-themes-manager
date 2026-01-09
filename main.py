@@ -14,7 +14,7 @@ config_file_name = "./config.ini"
 config_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),config_file_name)
 if not os.path.isfile(config_file_path) :
     iprint(f"config file does not exist '{config_file_name}'.",bcolors.FAIL,"ERROR")
-    iprint(f"you can run {os.path.join(os.path.dirname(os.path.realpath(__file__)),"install.sh")} to generate default configs",bcolors.WARNING,"HINT")
+    iprint(f"you can run {os.path.join(os.path.dirname(os.path.realpath(__file__)),'install.sh')} to generate default configs",bcolors.WARNING,"HINT")
     quit(1)
 try :
     config = ConfigParser()
@@ -29,7 +29,7 @@ try :
 except Exception as e :
     iprint(f"An error occurred when parsing the config file :",bcolors.FAIL,"ERROR")
     print (type(e).__name__,e)
-    iprint(f"you can run {os.path.join(os.path.dirname(os.path.realpath(__file__)),"install.sh")} to generate default configs",bcolors.WARNING,"HINT")
+    iprint(f"you can run {os.path.join(os.path.dirname(os.path.realpath(__file__)),'install.sh')} to generate default configs",bcolors.WARNING,"HINT")
     quit()
 
 # Read themes from themes directories

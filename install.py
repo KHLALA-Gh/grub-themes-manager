@@ -11,6 +11,9 @@ import configparser
 import os
 import subprocess
 from lib.search_alias import check_alias_existence
+
+
+
 tprint("Install")
 
 print("\n\n\n")
