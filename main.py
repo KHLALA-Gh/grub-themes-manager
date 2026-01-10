@@ -7,30 +7,83 @@ from lib.colors import bcolors
 from lib.print import iprint
 import json
 from distro import id
-title=tprint("Grub Themes",font="small")
+from pathlib import Path
+import argparse
+from lib.config import open_config 
+from lib.theme import install_theme
+
+
+config_file_name = "config.ini"
+root = os.path.dirname(os.path.realpath(__file__))
+
+config_file_path = os.path.join(root,config_file_name)
+parser = argparse.ArgumentParser(
+            description="Tool to install Grub themes."
+)
+parser.add_argument("-c", "--config", action="store_true",help="edit config file")
+parser.add_argument("-g", "--generate-config", action="store_true",help="generate new configs")
+parser.add_argument("-i", "--install-theme", help="Install theme from a specific directory")
+args = parser.parse_args()
+
+config_path = Path(config_file_path)
 
 # Read and set config from config.ini file 
-config_file_name = "./config.ini"
-config_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),config_file_name)
+
 if not os.path.isfile(config_file_path) :
-    iprint(f"config file does not exist '{config_file_name}'.",bcolors.FAIL,"ERROR")
-    iprint(f"you can run {os.path.join(os.path.dirname(os.path.realpath(__file__)),'install.sh')} to generate default configs",bcolors.WARNING,"HINT")
+    iprint(f"config file does not exist '{config_file_path}'.",bcolors.FAIL,"ERROR")
+    iprint(f"you can run 'grub-tm -g' to generate default configs",bcolors.WARNING,"HINT")
     quit(1)
 try :
     config = ConfigParser()
     config.read(config_file_path)
     default = config["DEFAULT"]
     grub_themes_paths=json.loads(default["themes_dirs"])
-    grub_cfg_file_path = default["grub_file"]
-    grub_cfg = default["grub_cfg"]
+    grub_cfg_file_path = Path(default["grub_file"])
+    if not grub_cfg_file_path.exists() :
+        iprint(f"{grub_cfg_file_path} does not exist (the grub config file does not exist)",bcolors.FAIL,"ERROR")
+        iprint(f"make sure the 'grub_file' path is correct in '{config_file_path}' (run 'grub-tm -c' to edit)",bcolors.WARNING,"HINT")
+        quit(1)
     for i in range (len(grub_themes_paths)) :
         if not os.path.isdir(grub_themes_paths[i]) :
             raise NotADirectoryError(f": {grub_themes_paths[i]} is not a directory in themes_dirs")
 except Exception as e :
     iprint(f"An error occurred when parsing the config file :",bcolors.FAIL,"ERROR")
     print (type(e).__name__,e)
-    iprint(f"you can run {os.path.join(os.path.dirname(os.path.realpath(__file__)),'install.sh')} to generate default configs",bcolors.WARNING,"HINT")
-    quit()
+    iprint(f"you can run 'grub-tm -g' to generate default configs",bcolors.WARNING,"HINT")
+    quit(1)
+
+if args.config:
+    open_config(config_path)
+elif args.generate_config :
+    script_path = os.path.join(root,"scripts/gen_config.sh")
+    result = subprocess.run(["sudo",script_path,config_file_path], 
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True)
+    if result.returncode != 0 : 
+        print(result.stderr)
+        quit(result.returncode)
+elif args.install_theme :
+    if os.path.isdir(args.install_theme) :
+        try : 
+            if not os.path.isfile(os.path.join(args.install_theme,"theme.txt")) :
+                iprint("not a theme directory (theme.txt does not exist)",bcolors.FAIL,"ERROR")
+                quit(1)
+            install_theme(grub_cfg_file_path,args.install_theme)
+            quit(0)
+        except : 
+            quit(1)
+    else : 
+        iprint(f"{args.install_theme} : No such directory",bcolors.FAIL,"ERROR")
+        quit(1)
+
+
+
+
+title=tprint("Grub Themes",font="small")
+
+
 
 # Read themes from themes directories
 content = []
@@ -59,10 +112,10 @@ for i in range (len(content)) :
 print(res)
 test = False
 while test == False :
-    inp=input(f"write theme number [1-{len(content)}]('c' to quit) : ")
+    inp=input(f"write theme number [1-{len(content)}]('q' to quit) : ")
     if inp.isdigit() and 0 < int(inp) < len(content)+ 1: 
        test = True 
-    elif inp.lower()=="c" :
+    elif inp.lower()=="q" :
         quit(0)
     else :
         print(f"please type a number between 1 and {len(content)}")
@@ -74,27 +127,11 @@ print(f"installing {theme_name}...")
 
 # edit the grub config file
 
+try : 
+    install_theme(str(grub_cfg_file_path),theme_path)
+except(err) :
+    print(err)
+finally :
+    # finish 
+    print(theme_name,"is installed. Reboot to test the theme.")
 
-def change_theme(file_path,theme_path):
-    # Read the content of the file
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-
-    # Remove lines containing GRUB_THEME
-    new_lines = [line for line in lines if 'GRUB_THEME=' not in line]
-    new_lines.append(f'GRUB_THEME="{os.path.join(theme_path,"theme.txt")}"')
-    # Write the modified content back to the file
-    with open(file_path, 'w') as file:
-       file.writelines(new_lines)
-
-
-change_theme(grub_cfg_file_path,theme_path)
-grubConfigCmd = "grub-mkconfig"
-
-if id() == "fedora" :
-    grubConfigCmd = "grub2-mkconfig"
-# generate the grub config file
-result = subprocess.run(f"sudo {grubConfigCmd} -o {grub_cfg}",shell=True, check=True, stdout=subprocess.PIPE, text=True)
-print(nl*3)
-# finish 
-print(theme_name,"is installed. Reboot to test the theme.")

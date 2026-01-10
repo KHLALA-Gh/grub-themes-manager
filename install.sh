@@ -5,7 +5,7 @@ TOOL_NAME="grub-tm"
 INSTALL_DIR="/opt/$TOOL_NAME"
 VENV_DIR="$INSTALL_DIR/venv"
 BIN_PATH="/usr/local/bin/$TOOL_NAME"
-
+CONFIG_PATH="$INSTALL_DIR/config.ini"
 echo "Installing $TOOL_NAME..."
 
 # Must be run as root
@@ -46,7 +46,12 @@ fi
 echo "Installing files to $INSTALL_DIR"
 mkdir -p "$INSTALL_DIR"
 rsync -a --exclude '.git' ./ "$INSTALL_DIR/"
-rm -f "$INSTALL_DIR/install.sh"
+chmod +x $INSTALL_DIR/scripts/*
+cat << EOF > "$CONFIG_PATH"
+[DEFAULT]
+themes_dirs = ["/usr/share/grub/themes"]
+grub_file = /etc/default/grub
+EOF
 
 # Create virtual environment
 echo "Creating virtual environment..."
