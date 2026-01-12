@@ -4,7 +4,7 @@ import subprocess
 
 
 def find_grub_update_command():
-    # Debian / Ubuntu (preferred)
+    # Debian / Ubuntu 
     if shutil.which("update-grub"):
         return ["update-grub"], None
 

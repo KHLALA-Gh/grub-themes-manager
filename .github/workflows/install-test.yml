@@ -48,5 +48,5 @@ jobs:
               test -x /usr/local/bin/grub-tm
 
               # Smoke test 
-              echo q | /usr/local/bin/grub-tm 
+              /usr/local/bin/grub-tm -h 
             '

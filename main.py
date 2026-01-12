@@ -27,6 +27,21 @@ args = parser.parse_args()
 
 config_path = Path(config_file_path)
 
+if args.config:
+    open_config(config_path)
+elif args.generate_config :
+    script_path = os.path.join(root,"scripts/gen_config.sh")
+    result = subprocess.run(["sudo",script_path,config_file_path], 
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True)
+    if result.returncode != 0 : 
+        print(result.stderr)
+        quit(result.returncode)
+
+
+
 # Read and set config from config.ini file 
 
 if not os.path.isfile(config_file_path) :
@@ -52,19 +67,9 @@ except Exception as e :
     iprint(f"you can run 'grub-tm -g' to generate default configs",bcolors.WARNING,"HINT")
     quit(1)
 
-if args.config:
-    open_config(config_path)
-elif args.generate_config :
-    script_path = os.path.join(root,"scripts/gen_config.sh")
-    result = subprocess.run(["sudo",script_path,config_file_path], 
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True)
-    if result.returncode != 0 : 
-        print(result.stderr)
-        quit(result.returncode)
-elif args.install_theme :
+
+
+if args.install_theme :
     if os.path.isdir(args.install_theme) :
         try : 
             if not os.path.isfile(os.path.join(args.install_theme,"theme.txt")) :
@@ -77,7 +82,6 @@ elif args.install_theme :
     else : 
         iprint(f"{args.install_theme} : No such directory",bcolors.FAIL,"ERROR")
         quit(1)
-
 
 
 
