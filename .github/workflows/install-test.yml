@@ -1,0 +1,52 @@
+name: Install Script Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-install:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - ubuntu:22.04
+          - debian:13
+          - fedora:42
+          - archlinux:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Test install on ${{ matrix.distro }}
+        run: |
+          docker run --rm \
+            -v "$PWD:/src" \
+            ${{ matrix.distro }} \
+            bash -c '
+              set -e
+
+              # Install prerequisites
+              if command -v apt >/dev/null; then
+                apt update
+                apt install -y python3 python3-venv sudo rsync
+              elif command -v dnf >/dev/null; then
+                dnf install -y python3 sudo rsync
+              elif command -v pacman >/dev/null; then
+                pacman -Sy --noconfirm python sudo rsync
+              fi
+
+              cd /src
+
+              # Run install script
+              bash install.sh
+
+              # Verify launcher
+              test -x /usr/local/bin/grub-tm
+
+              # Smoke test 
+              /usr/local/bin/grub-tm -h 
+            '
